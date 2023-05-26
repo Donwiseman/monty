@@ -8,7 +8,7 @@
  *
  * Return: -1 if unsuccesful, 1 if empty and 0 if something was read
  */
-int tokenize(char *buf, char *opcode, char *arg)
+int tokenize(char *buf, char **opcode, char **arg)
 {
 	int i = 0, x = 0;
 	char *temp;
@@ -18,17 +18,17 @@ int tokenize(char *buf, char *opcode, char *arg)
 	temp = malloc(128 * sizeof(char));
 	if (temp == NULL)
 		return (-1);
-	opcode = temp;
-	while (buf[i] == '\n' || buf[i] == '\0')
+	*opcode = temp;
+	while (buf[i] != '\n' || buf[i] != '\0')
 	{
 		if (buf[i] != ' ')
 		{
-			while (buf[i] == '\n' || buf[i] == '\0')
+			while (buf[i] != '\n' || buf[i] != '\0')
 			{
 				temp[x] = buf[i];
 				x++;
 				i++;
-				if (buf[i] == ' ' || buf[i] == '\0')
+				if (buf[i] == ' ' || buf[i] == '\0' || buf[i] == '\n')
 				{
 					temp[x] = '\0';
 					break;
@@ -36,16 +36,14 @@ int tokenize(char *buf, char *opcode, char *arg)
 			}
 			if (strcmp(temp, "push") == 0)
 			{
-				arg = malloc(128 * sizeof(char));
-				if (arg == NULL)
-				{
-					free(opcode);
+				*arg = malloc(128 * sizeof(char));
+				if (*arg == NULL)
 					return (-1);
-				}
-				temp = arg;
+				temp = *arg;
 				x = 0;
 				continue;
 			}
+			break;
 		}
 		i++;
 	}

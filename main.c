@@ -92,16 +92,16 @@ ssize_t other_op(stack_t **stk, char *op_c, instruction_t **oparr, ssize_t l_n)
  */
 instruction_t **create_oplist()
 {
-	instruction_t **oplist = malloc(7 * sizeof(instruction_t));
+	instruction_t **oplist = malloc(7 * sizeof(instruction_t *));
 
 	if (oplist == NULL)
 		print_mal_err();
-	add_inst(oplist[0], "pall", &print_stack);
-	add_inst(oplist[1], "pop", &pop_stack);
-	add_inst(oplist[2], "pint", &pint_stack);
-	add_inst(oplist[3], "swap", &swap_stack);
-	add_inst(oplist[4], "add", &add_stack);
-	add_inst(oplist[5], "nop", NULL);
+	add_inst(&oplist[0], "pall", &print_stack);
+	add_inst(&oplist[1], "pop", &pop_stack);
+	add_inst(&oplist[2], "pint", &pint_stack);
+	add_inst(&oplist[3], "swap", &swap_stack);
+	add_inst(&oplist[4], "add", &add_stack);
+	add_inst(&oplist[5], "nop", NULL);
 	oplist[6] = NULL;
 	return (oplist);
 }
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 	while ((fgets(buf, 256, script)) != NULL)
 	{
 		valid = 0;
-		check = tokenize(buf, opcode, arg);
+		check = tokenize(buf, &opcode, &arg);
 		if (check == 1)
 			continue;
 		else if (check == -1)
@@ -165,4 +165,4 @@ int main(int argc, char **argv)
 	}
 	free_all(oplist, stack);
 	exit(EXIT_SUCCESS);
-
+}

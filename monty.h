@@ -39,8 +39,8 @@ typedef struct instruction_s
 void print_stack(stack_t **stack, unsigned int line_number);
 void free_stack(stack_t *rear);
 void pop_stack(stack_t **stack, unsigned int line_number);
-int tokenize(char *buf, char *opcode, char *arg);
-void add_inst(instruction_t *dt, char *oc, void (*f)(stack_t**, unsigned int));
+int tokenize(char *buf, char **opcode, char **arg);
+void add_inst(instruction_t **d, char *oc, void (*f)(stack_t**, unsigned int));
 void free_inst(instruction_t **oplist);
 void print_file_err(char *file);
 void print_usage_err(void);

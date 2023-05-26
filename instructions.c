@@ -2,21 +2,24 @@
 
 /**
  * add_inst - creates a instruction data
- * @dt: allocated memory for data
- * @op_c: opcode for the instruction
+ * @d: allocated memory for data
+ * @oc: opcode for the instruction
  * @f: function for particular opcode
  */
-void add_inst(instruction_t *dt, char *oc, void (*f)(stack_t **, unsigned int))
+void add_inst(instruction_t **d, char *oc, void (*f)(stack_t **, unsigned int))
 {
 	char *opcode;
 	void (*func)(stack_t **, unsigned int) = f;
+	instruction_t *new;
 
-	opcode = malloc((strlen(oc) + 10) * sizeof(char));
+	opcode = malloc((strlen(oc) + 1) * sizeof(char));
 	if (opcode == NULL)
 		print_mal_err();
 	strcpy(opcode, oc);
-	dt->opcode = opcode;
-	dt->f = func;
+	new = malloc(sizeof(instruction_t));
+	*d = new;
+	(*d)->opcode = opcode;
+	(*d)->f = func;
 }
 
 /**
@@ -30,6 +33,7 @@ void free_inst(instruction_t **oplist)
 	for (x = 0; oplist[x] != NULL; x++)
 	{
 		free((oplist[x])->opcode);
+		free(oplist[x]);
 	}
 	free(oplist);
 }
