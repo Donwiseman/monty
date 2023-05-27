@@ -10,42 +10,44 @@
  */
 int tokenize(char *buf, char **opcode, char **arg)
 {
-	int i = 0, x = 0;
+	int i = 0, x = 0, found = 0;
 	char *temp;
 
 	if (buf[i] == '\n' || buf[i] == '\0')
 		return (1);
-	temp = malloc(128 * sizeof(char));
-	if (temp == NULL)
-		return (-1);
-	*opcode = temp;
-	while (buf[i] != '\n' || buf[i] != '\0')
+	while (buf[i] != '\n' && buf[i] != '\0')
 	{
 		if (buf[i] != ' ')
 		{
-			while (buf[i] != '\n' || buf[i] != '\0')
+			temp = malloc(128 * sizeof(char));
+			if (temp == NULL)
+			{
+				if (found == 1)
+					free(*opcode);
+				return (-1);
+			}
+			if (found == 0)
+				*opcode = temp;
+			else if (found == 1)
+				*arg = temp;
+			for (x = 0; buf[i] != '\n' || buf[i] != '\0'; x++)
 			{
 				temp[x] = buf[i];
-				x++;
 				i++;
 				if (buf[i] == ' ' || buf[i] == '\0' || buf[i] == '\n')
 				{
-					temp[x] = '\0';
+					temp[++x] = '\0';
+					found++;
 					break;
 				}
 			}
-			if (strcmp(temp, "push") == 0)
-			{
-				*arg = malloc(128 * sizeof(char));
-				if (*arg == NULL)
-					return (-1);
-				temp = *arg;
-				x = 0;
+			if ((strcmp(temp, "push") == 0) && found == 1)
 				continue;
-			}
 			break;
 		}
 		i++;
 	}
+	if (found == 0)
+		return (1);
 	return (0);
 }
