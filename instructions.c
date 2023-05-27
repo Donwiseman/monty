@@ -1,11 +1,6 @@
 #include "monty.h"
 
 /**
- * oplist - global variable definition
- */
-instruction_t **oplist = NULL;
-
-/**
  * add_inst - creates a instruction data
  * @d: allocated memory for data
  * @oc: opcode for the instruction

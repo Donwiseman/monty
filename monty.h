@@ -37,6 +37,7 @@ typedef struct instruction_s
 } instruction_t;
 
 extern instruction_t **oplist;
+instruction_t **oplist;
 void create_oplist(void);
 void print_stack(stack_t **stack, unsigned int line_number);
 void free_stack(stack_t *rear);
