@@ -41,6 +41,7 @@ instruction_t **oplist;
 void create_oplist(void);
 void print_stack(stack_t **stack, unsigned int line_number);
 void free_stack(stack_t *rear);
+void free_all(stack_t **stack, char *opcode, char *arg);
 void pop_stack(stack_t **stack, unsigned int line_number);
 int tokenize(char *buf, char **opcode, char **arg);
 void add_inst(instruction_t **d, char *oc, void (*f)(stack_t**, unsigned int));
@@ -51,5 +52,9 @@ void print_mal_err(void);
 void pint_stack(stack_t **stack, unsigned int line_number);
 void swap_stack(stack_t **stack, unsigned int line_number);
 void add_stack(stack_t **stack, unsigned int line_number);
+void sub_stack(stack_t **stack, unsigned int line_number);
+void mul_stack(stack_t **stack, unsigned int line_number);
+void div_stack(stack_t **stack, unsigned int line_number);
+void mod_stack(stack_t **stack, unsigned int line_number);
 
 #endif

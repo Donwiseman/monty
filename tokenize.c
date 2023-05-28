@@ -13,9 +13,7 @@ int tokenize(char *buf, char **opcode, char **arg)
 	int i = 0, x = 0, found = 0;
 	char *temp;
 
-	if (buf[i] == '\n' || buf[i] == '\0')
-		return (1);
-	while (buf[i] != '\n' && buf[i] != '\0')
+	while (buf[i] != '\n' && buf[i] != '\0' && buf[i] != '#')
 	{
 		if (buf[i] != ' ')
 		{

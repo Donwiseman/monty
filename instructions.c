@@ -24,7 +24,6 @@ void add_inst(instruction_t **d, char *oc, void (*f)(stack_t **, unsigned int))
 
 /**
  * free_inst - frees array of instruction data type
- * @oplist: array of instruction
  */
 void free_inst(void)
 {
@@ -45,7 +44,7 @@ void free_inst(void)
  */
 void create_oplist(void)
 {
-	oplist = malloc(7 * sizeof(instruction_t *));
+	oplist = malloc(11 * sizeof(instruction_t *));
 
 	if (oplist == NULL)
 		print_mal_err();
@@ -54,6 +53,10 @@ void create_oplist(void)
 	add_inst(&oplist[2], "pint", &pint_stack);
 	add_inst(&oplist[3], "swap", &swap_stack);
 	add_inst(&oplist[4], "add", &add_stack);
-	add_inst(&oplist[5], "nop", NULL);
-	oplist[6] = NULL;
+	add_inst(&oplist[5], "sub", &sub_stack);
+	add_inst(&oplist[6], "mul", &mul_stack);
+	add_inst(&oplist[7], "div", &div_stack);
+	add_inst(&oplist[8], "mod", &mod_stack);
+	add_inst(&oplist[9], "nop", NULL);
+	oplist[10] = NULL;
 }
