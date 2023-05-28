@@ -22,13 +22,14 @@ void free_all(stack_t **stack, char *opcode, char *arg)
  * @arg: arg to push
  * @ln: line number read from script
  * @opcode: operation code "push"
+ * @mod: current mode of the program; stack or queue
  *
  * Return: nothing
  */
-void push_op(stack_t **stack, char *arg, ssize_t ln, char *opcode)
+void push_op(stack_t **stack, char *arg, ssize_t ln, char *opcode, ssize_t mod)
 {
-	int num = atoi(arg), x;
-	stack_t *new;
+	int num = atoi(arg);
+	stack_t *new, *last = *stack;
 
 	if (arg == NULL)
 	{
@@ -36,15 +37,7 @@ void push_op(stack_t **stack, char *arg, ssize_t ln, char *opcode)
 		fprintf(stderr, "L%lu: usage: push integer\n", ln);
 		exit(EXIT_FAILURE);
 	}
-	for (x = 0; arg[x] != '\0'; x++)
-	{
-		if ((arg[x] < 48 || arg[x] > 57) && arg[x] != '-')
-		{
-			free_all(stack, opcode, arg);
-			fprintf(stderr, "L%lu: usage: push integer\n", ln);
-			exit(EXIT_FAILURE);
-		}
-	}
+	check_arg(stack, ln, opcode, arg);
 	new = (stack_t *) malloc(sizeof(stack_t));
 	if (new == NULL)
 	{
@@ -56,6 +49,13 @@ void push_op(stack_t **stack, char *arg, ssize_t ln, char *opcode)
 	new->next = NULL;
 	if (*stack == NULL)
 		*stack = new;
+	else if (mod == 1)
+	{
+		while (last->prev != NULL)
+			last = last->prev;
+		last->prev = new;
+		new->next = last;
+	}
 	else
 	{
 		new->prev = *stack;
@@ -99,6 +99,24 @@ void other_op(stack_t **stk, char *op_c, instruction_t **oparr, ssize_t l_n)
 }
 
 /**
+ * change_mode - change the mode to queue or stack
+ * @opcode: operation code to change mode
+ *
+ * Return: 0 for stack and 1 for queue
+ */
+ssize_t change_mode(char *opcode)
+{
+	ssize_t mode;
+
+	if (strcmp(opcode, "stack") == 0)
+		mode = 0;
+	else
+		mode = 1;
+	free(opcode);
+	return (mode);
+}
+
+/**
  * main - main monty function
  * @argc: arg count
  * @argv: arg vector
@@ -108,9 +126,9 @@ void other_op(stack_t **stk, char *op_c, instruction_t **oparr, ssize_t l_n)
 int main(int argc, char **argv)
 {
 	FILE *script;
-	ssize_t line_number = 1, check;
+	ssize_t line_number = 1, check, mode = 0;
 	stack_t *stack = NULL;
-	char *buf, *opcode = NULL, *arg = NULL;
+	char *buf, *op = NULL, *arg = NULL;
 
 	if (argc != 2)
 		print_usage_err();
@@ -123,7 +141,7 @@ int main(int argc, char **argv)
 		print_mal_err();
 	while ((fgets(buf, 256, script)) != NULL)
 	{
-		check = tokenize(buf, &opcode, &arg);
+		check = tokenize(buf, &op, &arg);
 		if (check == 1)
 			continue;
 		else if (check == -1)
@@ -131,10 +149,12 @@ int main(int argc, char **argv)
 			free_all(&stack, NULL, NULL);
 			print_mal_err();
 		}
-		if (strcmp(opcode, "push") == 0)
-			push_op(&stack, arg, line_number, opcode);
+		if ((strcmp(op, "stack") == 0) || (strcmp(op, "queue") == 0))
+			mode = change_mode(op);
+		else if (strcmp(op, "push") == 0)
+			push_op(&stack, arg, line_number, op, mode);
 		else
-			other_op(&stack, opcode, oplist, line_number);
+			other_op(&stack, op, oplist, line_number);
 		line_number++;
 	}
 	fclose(script);
