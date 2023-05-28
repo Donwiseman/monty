@@ -23,7 +23,7 @@ void pint_stack(stack_t **stack, unsigned int line_number)
  */
 void swap_stack(stack_t **stack, unsigned int line_number)
 {
-	stack_t *prev = (*stack)->prev, *temp = *stack;
+	stack_t *prev, *temp = *stack;
 	unsigned int num = line_number;
 
 	if (*stack == NULL || (*stack)->prev == NULL)
@@ -32,6 +32,7 @@ void swap_stack(stack_t **stack, unsigned int line_number)
 		fprintf(stderr, "L%u: can't swap, stack too short\n", num);
 		exit(EXIT_FAILURE);
 	}
+	prev = (*stack)->prev;
 	prev->next = NULL;
 	temp->prev = prev->prev;
 	prev->prev->next = temp;
