@@ -44,7 +44,7 @@ void free_inst(void)
  */
 void create_oplist(void)
 {
-	oplist = malloc(13 * sizeof(instruction_t *));
+	oplist = malloc(15 * sizeof(instruction_t *));
 
 	if (oplist == NULL)
 		print_mal_err();
@@ -59,6 +59,8 @@ void create_oplist(void)
 	add_inst(&oplist[8], "mod", &mod_stack);
 	add_inst(&oplist[9], "pchar", &pchar);
 	add_inst(&oplist[10], "pstr", &pstr);
-	add_inst(&oplist[11], "nop", NULL);
-	oplist[12] = NULL;
+	add_inst(&oplist[11], "rotr", &rotr);
+	add_inst(&oplist[12], "rotl", &rotl);
+	add_inst(&oplist[13], "nop", NULL);
+	oplist[14] = NULL;
 }
